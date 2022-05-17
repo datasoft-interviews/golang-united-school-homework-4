@@ -2,7 +2,6 @@ package string_sum
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -13,8 +12,6 @@ var (
 	errorEmptyInput = errors.New("input is empty")
 	// Use when the expression has number of operands not equal to two
 	errorNotTwoOperands = errors.New("expecting two operands, but received more or less")
-	firstOperandError   = fmt.Errorf("First operand is not valid")
-	secondOperandError  = fmt.Errorf("Second operand is not valid")
 )
 
 // Implement a function that computes the sum of two int numbers written as a string
@@ -44,18 +41,18 @@ func StringSum(input string) (output string, err error) {
 	if del == -1 {
 		return "", errorNotTwoOperands
 	}
-	first_oper := input[0:del]
-	second_oper := input[del:]
-	if len(second_oper) == 1 {
+	firstOper := input[0:del]
+	secondOper := input[del:]
+	if len(secondOper) == 1 {
 		return "", errorNotTwoOperands
 	}
-	first_sum, err := strconv.Atoi(first_oper)
+	firstSum, err := strconv.Atoi(firstOper)
 	if err != nil {
-		return "", firstOperandError
+		return "", err
 	}
-	second_sum, err := strconv.Atoi(second_oper)
+	secondSum, err := strconv.Atoi(secondOper)
 	if err != nil {
-		return "", secondOperandError
+		return "", err
 	}
-	return strconv.Itoa(first_sum + second_sum), nil
+	return strconv.Itoa(firstSum + secondSum), nil
 }
