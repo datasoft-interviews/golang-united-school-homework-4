@@ -2,6 +2,7 @@ package string_sum
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -25,32 +26,42 @@ var (
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
 func StringSum(input string) (output string, err error) {
-	input = strings.TrimSpace(input)
-	if len(input) == 0 {
-		return "", errorEmptyInput
+	ops := make([]string, 0)
+	input = strings.TrimSpace(input) // remove spaces at the begin and at the end
+	if input == "" {
+		return "", fmt.Errorf("%w", errorEmptyInput)
 	}
-	del := -1
+	buf := string(input[0])
 	for i := 1; i < len(input); i++ {
+		// remove spaces in the middle
+		if string(input[i]) == " " {
+			continue
+		}
+		// new operand starts with sign
 		if string(input[i]) == "-" || string(input[i]) == "+" {
-			if del != -1 {
-				return "", errorNotTwoOperands
-			}
-			del = i
+			ops = append(ops, buf) // add buffered operand
+			buf = string(input[i]) // begin to collect new operand
+		} else { // collect operand
+			buf = buf + string(input[i])
 		}
 	}
-	if del == -1 {
-		return "", errorNotTwoOperands
+	// add last operand if it exist
+	if len(buf) > 0 {
+		ops = append(ops, buf)
 	}
-	firstOper := input[0:del]
-	secondOper := input[del:]
-	if len(secondOper) == 1 {
-		return "", errorNotTwoOperands
+	// no operands
+	if len(ops) == 0 {
+		return "", fmt.Errorf("%w", errorEmptyInput)
 	}
-	firstSum, err := strconv.Atoi(firstOper)
+	// wrong number of operands
+	if len(ops) != 2 {
+		return "", fmt.Errorf("%w", errorNotTwoOperands)
+	}
+	firstSum, err := strconv.Atoi(ops[0])
 	if err != nil {
 		return "", err
 	}
-	secondSum, err := strconv.Atoi(secondOper)
+	secondSum, err := strconv.Atoi(ops[1])
 	if err != nil {
 		return "", err
 	}
