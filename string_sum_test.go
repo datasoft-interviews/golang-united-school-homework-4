@@ -80,16 +80,15 @@ func Test1Operand(t *testing.T) {
 	if got, err := StringSum(input); err.Error() != errorNotTwoOperands.Error() {
 		t.Errorf(revMsg, got, "errorNotTwoOperands", err)
 	}
-	/*
-		input = "2+"
-		if got, err := StringSum(input); err.Error() != "strconv.Atoi: parsing \"+\": invalid syntax" {
-			t.Errorf(revMsg, got, "NumError", err)
-		}
-		input = "2-"
-		if got, err := StringSum(input); err.Error() != "strconv.Atoi: parsing \"-\": invalid syntax" {
-			t.Errorf(revMsg, got, "NumError", err)
-		}
-	*/
+	input = "2+"
+	var want *strconv.NumError
+	if got, err := StringSum(input); !errors.As(err, &want) {
+		t.Errorf(revMsg, got, "strconv.NumError", err)
+	}
+	input = "2-"
+	if got, err := StringSum(input); !errors.As(err, &want) {
+		t.Errorf(revMsg, got, "strconv.NumError", err)
+	}
 }
 
 func Test3Operand(t *testing.T) {
@@ -105,12 +104,12 @@ func Test3Operand(t *testing.T) {
 
 func TestNotValid(t *testing.T) {
 	input := "a+2"
-	want := &strconv.NumError{}
-	if got, err := StringSum(input); errors.Is(err, want) {
-		t.Errorf("ReverseString() don't return firstOperandError, but return %s, %v", got, err)
+	var want *strconv.NumError
+	if got, err := StringSum(input); !errors.As(err, &want) {
+		t.Errorf(revMsg, got, "strconv.NumError", err)
 	}
 	input = "2+a"
-	if got, err := StringSum(input); errors.Is(err, want) {
-		t.Errorf("ReverseString() don't return secondOperandError, but return %s, %v", got, err)
+	if got, err := StringSum(input); !errors.As(err, &want) {
+		t.Errorf(revMsg, got, "strconv.NumError", err)
 	}
 }

@@ -59,11 +59,11 @@ func StringSum(input string) (output string, err error) {
 	}
 	firstSum, err := strconv.Atoi(ops[0])
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%w", err)
 	}
 	secondSum, err := strconv.Atoi(ops[1])
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%w", err)
 	}
 	return strconv.Itoa(firstSum + secondSum), nil
 }
